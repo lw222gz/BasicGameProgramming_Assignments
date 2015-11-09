@@ -21,8 +21,8 @@ namespace Labb1ChessGame
             graphics.IsFullScreen = false;
 
             //default screen
-            graphics.PreferredBackBufferHeight = 704;
-            graphics.PreferredBackBufferWidth = 704;
+            graphics.PreferredBackBufferHeight = 640;
+            graphics.PreferredBackBufferWidth = 640;
             graphics.ApplyChanges();
 
             chessModel = new ChessModel();
@@ -81,12 +81,26 @@ namespace Labb1ChessGame
                     chessModel.SetCoolDownForCommand();
                 }
 
-                //changes the resolution of the game
+                //makes the game resolution smaller
                 else if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
-                    //TODO: change resolution to 320x240
+                    graphics.PreferredBackBufferWidth = 320;
+                    graphics.PreferredBackBufferHeight = 240;                              
+                    graphics.ApplyChanges();
+
                     //https://msdn.microsoft.com/en-us/library/bb447674.aspx
                     chessModel.SetCoolDownForCommand();
+                    chessView.UpdateGameResolution(GraphicsDevice);
+                }
+                //restores game resolution to it's default
+                else if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    graphics.PreferredBackBufferHeight = 640;
+                    graphics.PreferredBackBufferWidth = 640;
+                    graphics.ApplyChanges();
+
+                    chessModel.SetCoolDownForCommand();
+                    chessView.UpdateGameResolution(GraphicsDevice);
                 }
 
 

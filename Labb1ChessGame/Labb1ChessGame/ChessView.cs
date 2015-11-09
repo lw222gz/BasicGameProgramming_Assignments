@@ -37,8 +37,17 @@ namespace Labb1ChessGame
         public void DrawGame() {
             bool everyOther = true;
             spriteBatch.Begin();
-            
-            spriteBatch.Draw(ChessBackground ,camera.GetBackgroundVectorPos(), null, Color.White, 0, new Vector2(0,0), 0.5f, SpriteEffects.None, 0);
+
+
+            //test
+
+            Rectangle rect = new Rectangle(0, 0, 32, 24);
+            Vector2 a = new Vector2(0,0);
+            spriteBatch.Draw(ChessBlackSquare,rect, Color.White);
+
+            //end test
+
+            spriteBatch.Draw(ChessBackground, camera.GetBackgroundVectorPos(), Color.White);//spriteBatch.Draw(ChessBackground ,camera.GetBackgroundVectorPos(), null, Color.White, 0, new Vector2(0,0), 0.5f, SpriteEffects.None, 0);
 
             foreach (int[] tileCords in this.chessModel.ChessSquareLogicCords)
             {
@@ -73,6 +82,12 @@ namespace Labb1ChessGame
             spriteBatch.Draw(ChessQueenPiece, camera.GetVisualCords(2, 3), Color.White);
 
             spriteBatch.End();
+        }
+
+
+        public void UpdateGameResolution(GraphicsDevice device)
+        {
+            camera.UpdateGameResolution(device);
         }
 
 

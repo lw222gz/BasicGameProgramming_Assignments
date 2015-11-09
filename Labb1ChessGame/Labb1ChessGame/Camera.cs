@@ -10,43 +10,67 @@ namespace Labb1ChessGame
     class Camera
     {
         private GraphicsDevice device;
-        private int chessBackgroundSize = 640;
-        private int tileSize = 64;
+        private int chessBackgroundSizeX;
+        private int chessBackgroundSizeY;
+        private int tileSizeX;
+        private int tileSizeY;
         private ChessModel chessModel;
 
         public Camera(GraphicsDevice device, ChessModel chessModel)
         {
             this.device = device;
             this.chessModel = chessModel;
+            UpdateResolutionValues();
         }
 
-        public Vector2 GetBackgroundVectorPos() {
-            int x = (this.device.Viewport.Width - chessBackgroundSize) / 2;
-            int y = (this.device.Viewport.Height - chessBackgroundSize) / 2;
-
-            return new Vector2(x, y);
+        //returns a Rectangle obj containg background cords and size.
+        public Rectangle GetBackgroundVectorPos() {
+            return new Rectangle(0, 0, chessBackgroundSizeX, chessBackgroundSizeY);
         }
 
-        internal Vector2 GetVisualCords(int x, int y)
+        //returns a Rectangle obj containg tile cords and size.
+        internal Rectangle GetVisualCords(int x, int y)
         {
-            //origin Pos is the cords for the top left square. (position of background + 64px indent.)
-            Vector2 originPos = GetBackgroundVectorPos() + new Vector2(64,64);
+            //origin Pos is the cords for the top left square. (position of background + pixel indent.)
+            Rectangle originPos = GetBackgroundVectorPos();
+            originPos.X += tileSizeX;
+            originPos.Y += tileSizeY;
 
-            Vector2 TilePosition = originPos;
+
+            Rectangle TilePosition;
+            
             if (!this.chessModel.IsTableTurned)
-            {                
-                TilePosition.X = tileSize * x + originPos.X;               
-                TilePosition.Y = tileSize * y + originPos.Y;               
+            {
+                TilePosition = new Rectangle(tileSizeX * x + originPos.X, 
+                                            tileSizeY * y + originPos.Y, 
+                                            tileSizeX, 
+                                            tileSizeY);             
             }
             else
             {
-                //FORMULA: (7-x) * 64 + p = y
-                TilePosition.X = (7 - x) * tileSize + originPos.X;
-                TilePosition.Y = (7 - y) * tileSize + originPos.Y;               
+                TilePosition = new Rectangle((7 - x) * tileSizeX + originPos.X, 
+                                            (7 - y) * tileSizeY + originPos.Y, 
+                                            tileSizeX, 
+                                            tileSizeY);            
             }
             
 
             return TilePosition;
+        }
+
+        //updates the game device with the new game window values.
+        public void UpdateGameResolution(GraphicsDevice device)
+        {
+            this.device = device;
+            UpdateResolutionValues();
+        }
+
+        private void UpdateResolutionValues()
+        {
+            tileSizeX = device.Viewport.Width / 10;
+            tileSizeY = device.Viewport.Height / 10;
+            chessBackgroundSizeX = device.Viewport.Width;
+            chessBackgroundSizeY = device.Viewport.Height;
         }
     }
 }
