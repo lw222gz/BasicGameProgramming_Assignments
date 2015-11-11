@@ -83,7 +83,7 @@ namespace BallBounceGame
                     graphics.PreferredBackBufferHeight = 240;
                     graphics.ApplyChanges();
 
-                    CommandTaken();
+                    UpdateResolution();
                 }
                 //default resolution
                 else if (Keyboard.GetState().IsKeyDown(Keys.D))
@@ -92,7 +92,7 @@ namespace BallBounceGame
                     graphics.PreferredBackBufferWidth = 640;
                     graphics.ApplyChanges();
 
-                    CommandTaken();
+                    UpdateResolution();
                 }
                 //large resolution
                 else if (Keyboard.GetState().IsKeyDown(Keys.F))
@@ -101,11 +101,11 @@ namespace BallBounceGame
                     graphics.PreferredBackBufferWidth = 800;
                     graphics.ApplyChanges();
 
-                    CommandTaken();
+                    UpdateResolution();
                 }
             }
-
             
+            ballSimulation.Update(gameTime.TotalGameTime.TotalMilliseconds);          
 
             base.Update(gameTime);
         }
@@ -124,9 +124,10 @@ namespace BallBounceGame
         }
 
 
-        private void CommandTaken()
+        private void UpdateResolution()
         {
             ballSimulation.SetCoolDownForCommand();
+            ballSimulation.UpdateGameResolution(GraphicsDevice);
             ballView.UpdateGameResolution(GraphicsDevice);
         }
     }

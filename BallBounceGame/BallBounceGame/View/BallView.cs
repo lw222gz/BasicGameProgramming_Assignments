@@ -15,17 +15,17 @@ namespace BallBounceGame.View
         private SpriteBatch spriteBatch;
         private Camera camera;
         private BallSimulation ballSimulation;
-        Texture2D Ball;
+        Texture2D BallTexture;
         Texture2D HorizontalWall;
         Texture2D VerticalWall;
 
         public BallView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation)
         {
             spriteBatch = new SpriteBatch(device);
-            camera = new Camera(device);
+            camera = new Camera(device, ballSimulation.WallThickness, ballSimulation.Dissort);
             this.ballSimulation = ballSimulation;
 
-            Ball = content.Load<Texture2D>("Ball.png");
+            BallTexture = content.Load<Texture2D>("Ball.png");
             HorizontalWall = content.Load<Texture2D>("WallHorizontal.png");
             VerticalWall = content.Load<Texture2D>("WallVertical.png");
         }
@@ -33,16 +33,21 @@ namespace BallBounceGame.View
 
         public void DrawGame()
         {
-            spriteBatch.Begin(); 
-            //draws the walls
-            spriteBatch.Draw(HorizontalWall, camera.GetWestWallCord(), Color.White);
-            spriteBatch.Draw(HorizontalWall, camera.GetEastWallCord(), Color.White);
-            spriteBatch.Draw(VerticalWall, camera.GetNorthWallCord(), Color.White);
-            spriteBatch.Draw(VerticalWall, camera.GetSouthWallCord(), Color.White);
+            spriteBatch.Begin();
+
+            //GetWallVisualCord take a Vextor2 as argument, the vectors X and Y values represent the starting point of the drawn picture (aka the top left corner.)
+            //west wall
+            spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(ballSimulation.WestWall), null, Color.White, 0, new Vector2(0,0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
+            //east wall
+            spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(ballSimulation.EastWall), null, Color.White, 0, new Vector2(0, 0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
+            //north wall
+            spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(ballSimulation.NorthWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
+            //south wall
+            spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(ballSimulation.SouthWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
 
             //draws the ball
-            Ball b = ballSimulation.getBall();
-            spriteBatch.Draw(Ball, b.BallCord, Color.White);
+            Ball ball = ballSimulation.getBall();
+            spriteBatch.Draw(BallTexture, camera.GetBallVisualCord(BallTexture, ball), null, Color.White, 0, new Vector2(0,0), camera.GetBallScale(BallTexture, ball), SpriteEffects.None, 0f);
             
             spriteBatch.End();
         }
