@@ -74,7 +74,7 @@ namespace Labb1ChessGame
             }
             if (chessModel.CanTakeCommand)
             {
-                //R for rotate
+                //R for rotateing the game
                 if (Keyboard.GetState().IsKeyDown(Keys.R))
                 {
                     chessModel.TurnTable();

@@ -25,8 +25,6 @@ namespace BallBounceGame
             graphics.PreferredBackBufferHeight = 640;
             graphics.ApplyChanges();
 
-            
-
             Content.RootDirectory = "Content";
             
         }
@@ -74,8 +72,11 @@ namespace BallBounceGame
             if (Keyboard.GetState().IsKeyDown(Keys.Escape)) { 
                 Exit();
             }
+            //I let the game only take maximum of 1 command per 500 milisec.
             if (ballSimulation.CanTakeCommand)
-            {        
+            {      
+                //keycommands for chaning resolution
+
                 //small resolution
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
@@ -105,6 +106,7 @@ namespace BallBounceGame
                 }
             }
             
+            //Updates the logic of the game
             ballSimulation.Update(gameTime.TotalGameTime.TotalMilliseconds);          
 
             base.Update(gameTime);
@@ -117,13 +119,14 @@ namespace BallBounceGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
+            //draws the game
             ballView.DrawGame();
 
             base.Draw(gameTime);
         }
 
 
+        //calls all the methods required for a resolution update
         private void UpdateResolution()
         {
             ballSimulation.SetCoolDownForCommand();

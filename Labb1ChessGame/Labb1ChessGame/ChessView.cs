@@ -92,10 +92,18 @@ namespace Labb1ChessGame
      *          2,7        |       384,64 
      *          7,7        |       64,64
      *       
-     *     FORMULA: (7-x) * 64 + p = y
-     *     where x is the value of the logical coordinate
-     *     and y is the value of the visual coordinate
-     *     and p is the cords for the top left corner of the game field
+     *     FORMULA: (h - a) * s + p = v
+     *     h = the highest value a logical cord can have (in this case 7)
+     *     a = the value of the logical coordinate that is being transformed to a visual coordinate
+     *     s = the tile width or heigth depending on calculation of X or Y visual coordinate, aslong as the tiles are square this value will be the same
+     *     p = visual coordinate value of the top left of the gamefield. X value if visual x is being calculated, Y value if visual y is being calculated
+     *     v = the value of the visual coordinate
+     *     
+     *     example: (6,0)
+     *     h = 7, s = 64, p = 64
+     *     VisualX = (7 - 6) * 64 + 64 = 128
+     *     VisualY = (7 - 0) * 64 + 64 = 512
+     *     thus the visual coordiantes for (6,0) is (128,512)
      *     
      *     RULE: This only works for 180 degree turns
      */

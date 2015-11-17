@@ -19,15 +19,15 @@ namespace BallBounceGame.View
         Texture2D HorizontalWall;
         Texture2D VerticalWall;
 
+        //sets values to the private object varibles.
         public BallView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation)
         {
             spriteBatch = new SpriteBatch(device);
             camera = new Camera(device, ballSimulation.WallThickness, ballSimulation.Dissort);
             this.ballSimulation = ballSimulation;
 
-            BallTexture = content.Load<Texture2D>("Ball.png");
-            HorizontalWall = content.Load<Texture2D>("WallHorizontal.png");
-            VerticalWall = content.Load<Texture2D>("WallVertical.png");
+            //Loads all graphical images used for the application
+            LoadGraphics(content);
         }
 
 
@@ -52,7 +52,16 @@ namespace BallBounceGame.View
             spriteBatch.End();
         }
 
-        internal void UpdateGameResolution(GraphicsDevice device)
+        //Loads in all textures to private varibles
+        private void LoadGraphics(ContentManager content)
+        {
+            BallTexture = content.Load<Texture2D>("Ball.png");
+            HorizontalWall = content.Load<Texture2D>("WallHorizontal.png");
+            VerticalWall = content.Load<Texture2D>("WallVertical.png");
+        }
+
+        //updates the game resolution
+        public void UpdateGameResolution(GraphicsDevice device)
         {
             this.camera.UpdateGameResolutionData(device);
         }

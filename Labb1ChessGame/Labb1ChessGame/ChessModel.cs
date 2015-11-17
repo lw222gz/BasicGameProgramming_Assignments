@@ -8,9 +8,14 @@ namespace Labb1ChessGame
 {
     class ChessModel
     {
+        //bool representing if the table is turned 180 degrees
         private bool isTableTurned;
+
+        //A list of int arrays, each array contains a logical coordinate for the chess game
         private List<int[]> chessSquareLogicCords;
-        private const int chessTileAmount = 64;
+
+        //holds the value for the max amount of tiles (chess board = 8x8)
+        private const int chessTileAmount = 8*8;
 
         public ChessModel()
         {
@@ -70,7 +75,6 @@ namespace Labb1ChessGame
                 isTableTurned = true;
             }
         }
-
 
 
         public void ResetTimeForCommand()

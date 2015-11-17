@@ -9,8 +9,8 @@ namespace BallBounceGame.Model
     class Ball
     {
         private Vector2 ballLogicCords;
-        private float ballLogicSpeedX = 0.2f;
-        private float ballLogicSpeedY = 0.2f;
+        private float ballLogicSpeedX = -0.5f;
+        private float ballLogicSpeedY = -0.5f;
         private const float ballLogicDiameter = 0.1f;
 
         
@@ -37,32 +37,43 @@ namespace BallBounceGame.Model
             ballLogicCords.Y += time * ballLogicSpeedY;
         }
 
-        public void CollisionHorizontal(float minDistance)
+        //Changes the speed aswell as the direction in the horizontal direction. 
+        //Lastly sets the Y Cords of the ball to the place of collision
+        public void CollisionHorizontalWall(float minDistance)
         {
             float NewSpeed = GenerateRandomSpeed();
+
+            
             if (ballLogicCords.Y <= minDistance)
-            {
-                ballLogicCords.Y = minDistance;
+            {              
                 ballLogicSpeedY = NewSpeed;
             }
             else
             {               
                 ballLogicSpeedY = -NewSpeed;
             }
+            //sets the Y cord to the point of collision
+            ballLogicCords.Y = minDistance;
         }
-        public void CollisionVertical(float minDistance)
+
+        //Changes the speed aswell as the direction in the vertical direction. 
+        //Lastly sets the X Cords of the ball to the place of collision
+        public void CollisionVerticalWall(float minDistance)
         {
             //I set the X value because if the ball has passed value 1 or 0 
             float NewSpeed = GenerateRandomSpeed();
+
+            
             if (ballLogicCords.X <= minDistance)
-            {
-                ballLogicCords.X = minDistance;
+            {        
                 ballLogicSpeedX = NewSpeed;
             }
             else
             {
                 ballLogicSpeedX = -NewSpeed;
             }
+            //sets the X cord to the point of collision
+            ballLogicCords.X = minDistance;
         }
 
         //returns a random logic coordinate between 0.1 and 0.9
