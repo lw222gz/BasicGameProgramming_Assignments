@@ -7,7 +7,7 @@ namespace SmokeSimulation.View
 {
     class SmokeSimulator
     {
-        private const int initialSmokeClouds = 15;
+        private const int initialSmokeClouds = 40;
 
         private float currentTime;
         private float lastUpdate;
@@ -15,7 +15,7 @@ namespace SmokeSimulation.View
         private List<Smoke> smoke;
         private Random rand;
 
-        //returns all smoke obj
+        //propery for smoke clouds
         public List<Smoke> getSmoke
         {
             get { return smoke; }
@@ -23,7 +23,7 @@ namespace SmokeSimulation.View
         public SmokeSimulator()
         {
             //initiate a couple of smoke objects
-            smoke = new List<Smoke>(50);
+            smoke = new List<Smoke>(61);
             rand = new Random();
             //initial smoke, more smoke spaws over time
             for (int i = 0; i < initialSmokeClouds; i++)
@@ -36,7 +36,6 @@ namespace SmokeSimulation.View
         public void GenerateSmoke(float time)
         {
             currentTime = time / 1000;
-            //AddSmoke();
 
             if (currentTime > lastUpdate)
             {
@@ -46,7 +45,7 @@ namespace SmokeSimulation.View
                 {
                     if (smoke[i].UpdateLocation(timeDiff))
                     {
-                        smoke[i] = new Smoke(rand);
+                        smoke[i].GenerateNewCloudStats(rand);
                         if (smoke.Count < smoke.Capacity)
                         {
                             AddSmoke();
@@ -63,7 +62,9 @@ namespace SmokeSimulation.View
         //adds a new smoke obj to the list
         public void AddSmoke()
         {
-            smoke.Add(new Smoke(rand));
+            Smoke s = new Smoke();
+            s.GenerateNewCloudStats(rand);
+            smoke.Add(s);
         }
 
         
