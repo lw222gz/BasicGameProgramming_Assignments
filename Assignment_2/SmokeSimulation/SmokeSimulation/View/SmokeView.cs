@@ -23,6 +23,7 @@ namespace SmokeSimulation.View
             smokeTexture = content.Load<Texture2D>("particlesmoke.png");
         }
 
+        //draws all smoke objs
         public void Draw()
         {
             spriteBatch.Begin();

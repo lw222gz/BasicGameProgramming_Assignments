@@ -7,7 +7,7 @@ namespace SmokeSimulation.View
 {
     class SmokeSimulator
     {
-        private const int initialSmokeClouds = 40;
+        private const int amountOfSmoke = 60;
 
         private float currentTime;
         private float lastUpdate;
@@ -20,16 +20,19 @@ namespace SmokeSimulation.View
         {
             get { return smoke; }
         }
+
         public SmokeSimulator()
         {
-            //initiate a couple of smoke objects
-            smoke = new List<Smoke>(61);
+            smoke = new List<Smoke>(amountOfSmoke);
             rand = new Random();
-            //initial smoke, more smoke spaws over time
-            for (int i = 0; i < initialSmokeClouds; i++)
+
+            //initial smoke, the spawns even up over time.
+            for (int i = 0; i < smoke.Capacity; i++)
             {
-                AddSmoke();
-            }            
+                Smoke s = new Smoke();
+                s.GenerateNewCloudStats(rand);
+                smoke.Add(s);
+            }      
         }
 
         //generates a new smoke cloud once one has gone out, if the list capacity still isent filled a new smoke cloud is spawned.
@@ -43,30 +46,15 @@ namespace SmokeSimulation.View
 
                 for (int i = 0; i < smoke.Count; i++)
                 {
-                    if (smoke[i].UpdateLocation(timeDiff))
+                    //if UpdateSmoke returns true then the smokes lifespan has passed it's limit, thus it's stats are refreshed.
+                    if (smoke[i].UpdateSmoke(timeDiff))
                     {
-                        smoke[i].GenerateNewCloudStats(rand);
-                        if (smoke.Count < smoke.Capacity)
-                        {
-                            AddSmoke();
-                        }
+                        smoke[i].GenerateNewCloudStats(rand);                       
                     }
                 }
 
                 lastUpdate = currentTime;
             }
-        }
-
-        
-
-        //adds a new smoke obj to the list
-        public void AddSmoke()
-        {
-            Smoke s = new Smoke();
-            s.GenerateNewCloudStats(rand);
-            smoke.Add(s);
-        }
-
-        
+        }     
     }
 }

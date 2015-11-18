@@ -11,22 +11,25 @@ namespace SmokeSimulation.View
         private Vector2 position;
         private Vector2 direction;
 
+        //measured in radian
         private float rotation;
-        private float rotationSpeed;
-        private float size;
+        private float rotationSpeed;      
 
         //measured in seconds
         private float timeLived;
         private float maxTimeToLive;
+
+        //measuerd in scale
         private const float maxSize = 10f;
         private const float minSize = 0f;
+        private float size;
 
-        
-        
-
+        //measuerd in logical values
         private const float maxSpeed = 0.3f;
         private const float minSpeed = 0.1f;
         private float speedModifier;
+
+        //measuerd in precentage (0-1)
         private float fade;
 
         public float Size
@@ -59,17 +62,16 @@ namespace SmokeSimulation.View
             rotation = (float)rand.Next(0, 20) / 10f;
             rotationSpeed = (float)rand.NextDouble();
 
-            maxTimeToLive = (float)rand.Next(30, 50) / 10f;
+            maxTimeToLive = (float)rand.Next(30, 45) / 10f;
 
             speedModifier = (float)rand.Next((int)(minSpeed * 10), (int)(maxSpeed * 10)) / 10f;
 
             direction = new Vector2((float)rand.NextDouble() - 0.5f, (float)rand.NextDouble() - 0.5f);
-            //adding some width for possible paths
-            direction.X = direction.X * 3;
+            direction.Normalize();
             direction = direction * ((float)rand.NextDouble() * maxSpeed);
         }
 
-        public bool UpdateLocation(float timeEffect)
+        public bool UpdateSmoke(float timeEffect)
         {
             //second representation of the total life span for this.smoke
             timeLived += timeEffect;
