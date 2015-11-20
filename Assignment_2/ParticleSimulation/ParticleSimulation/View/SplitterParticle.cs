@@ -24,19 +24,17 @@ namespace ParticleSimulation.View
             direction = new Vector2((float)rand.NextDouble() - 0.5f, (float)rand.NextDouble() - 0.5f);
             direction.Normalize();
             direction = direction * ((float)rand.NextDouble() * maxSpeed);
+
             position = new Vector2(0, 0);            
         }
 
         //updates a particles position
         public void UpdatePosition(float gravityEffect)
         {
-            position.X += direction.X * gravityEffect / 1.4f; //wanted to slow down the X speed just a little bit
-            position.Y += direction.Y * gravityEffect;
+            position = position + direction * gravityEffect;
 
             //pulls the particle down.
             direction.Y += gravityEffect;
         }
-
-
     }
 }

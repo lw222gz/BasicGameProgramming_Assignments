@@ -94,6 +94,7 @@ namespace SmokeSimulation.View
 
             //acceleration
             direction.Y -= timeEffect;
+
             //if a cloud has exceeded it's lifespan then the method returns true and a new one will be taking it's place.
             if (lifePercent >= 1)
             {

@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ExplosionSimulator.View;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SmokeSimulation.View;
+using System.Timers;
 
-namespace SmokeSimulation
+namespace ExplosionSimulator
 {
     /// <summary>
     /// This is the main type for your game.
@@ -11,15 +12,20 @@ namespace SmokeSimulation
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SmokeView smokeView;
-        SmokeSimulator smokeSimulator;
+        ExplosionView explosionView;
+        ExplosionUpdater explosionUpdater;
+ 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            smokeSimulator = new SmokeSimulator();
+
+            
+            
         }
+
+        
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -33,7 +39,7 @@ namespace SmokeSimulation
 
             base.Initialize();
         }
-        private Texture2D text;
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -41,10 +47,21 @@ namespace SmokeSimulation
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            explosionUpdater = new ExplosionUpdater();
+            explosionView = new ExplosionView(GraphicsDevice, Content, explosionUpdater);
 
-            smokeView = new SmokeView(GraphicsDevice, Content, smokeSimulator);
-
+            //http://stackoverflow.com/questions/11632419/how-can-i-make-an-infinite-loop-with-5-second-pauses
+            System.Timers.Timer aTimer;
+            aTimer = new System.Timers.Timer();
+            aTimer.Elapsed += new ElapsedEventHandler(ResetExplosion);
+            aTimer.Interval = 1500;
+            aTimer.Enabled = true;
             // TODO: use this.Content to load your game content here
+        }
+
+        private void ResetExplosion(object source, ElapsedEventArgs e)
+        {
+            explosionUpdater.ResetExplosion();
         }
 
         /// <summary>
@@ -63,12 +80,14 @@ namespace SmokeSimulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) { 
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
             }
 
-            smokeSimulator.GenerateSmoke((float)gameTime.TotalGameTime.TotalSeconds);
-
+            
+            explosionUpdater.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
+            
             base.Update(gameTime);
         }
 
@@ -78,10 +97,9 @@ namespace SmokeSimulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
-
-            smokeView.Draw();
+            explosionView.Draw();
 
             base.Draw(gameTime);
         }

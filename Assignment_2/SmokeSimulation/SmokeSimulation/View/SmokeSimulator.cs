@@ -38,7 +38,7 @@ namespace SmokeSimulation.View
         //generates a new smoke cloud once one has gone out, if the list capacity still isent filled a new smoke cloud is spawned.
         public void GenerateSmoke(float time)
         {
-            currentTime = time / 1000;
+            currentTime = time;
 
             if (currentTime > lastUpdate)
             {
