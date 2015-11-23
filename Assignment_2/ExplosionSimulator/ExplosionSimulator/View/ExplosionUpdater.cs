@@ -9,10 +9,15 @@ namespace ExplosionSimulator.View
     {
         private int frameX;
         private int frameY;
+        //total number of images in the sprite in the x-led
         private const int numFramesX = 4;
+        //Total number of frames in the sprite
         private const int numberOfFrames = 24;
+        //current time for the explosion
+        private float totalExplosionTime;
+        //time durotation for the explotion (seconds)
         private const float maxTime = 0.5f;
-        private float totalTime;
+        
 
 
         public int FrameX
@@ -25,18 +30,19 @@ namespace ExplosionSimulator.View
         }
         public void UpdateFrame(float timeElapsed)
         {
-            totalTime += timeElapsed;
+            totalExplosionTime += timeElapsed;
 
-            float percentAnimated = totalTime / maxTime;
+            float percentAnimated = totalExplosionTime / maxTime;
             int frame = (int)(percentAnimated * numberOfFrames);
 
+            //set values for the sprite "grid" 
             frameX = frame % numFramesX;
             frameY = frame / numFramesX;
         }
 
         public void ResetExplosion()
         {
-            totalTime = 0;
+            totalExplosionTime = 0;
         }
     }
 }
