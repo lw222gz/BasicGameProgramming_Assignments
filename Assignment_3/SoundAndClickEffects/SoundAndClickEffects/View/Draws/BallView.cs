@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SoundAndClickEffects.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,10 @@ namespace BallBounceGame.View
         Texture2D VerticalWall;
 
         //sets values to the private object varibles.
-        public BallView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation)
+        public BallView(SpriteBatch spriteBatch, Camera camera, ContentManager content, BallSimulation ballSimulation)
         {
-            spriteBatch = new SpriteBatch(device);
-            camera = new Camera(device);
+            this.spriteBatch = spriteBatch;
+            this.camera = camera;
             this.ballSimulation = ballSimulation;
 
             //Loads all graphical images used for the application

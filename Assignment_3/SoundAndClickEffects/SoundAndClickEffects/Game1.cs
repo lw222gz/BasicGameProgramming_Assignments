@@ -1,40 +1,22 @@
-﻿using ExplosionSimulator.View;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Timers;
-using MyExplosion_4_;
-using ParticleSimulation.View;
-using SmokeSimulation.View;
 
-namespace ExplosionSimulator
+namespace SoundAndClickEffects
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class My_Explosion : Game
+    public class SoundAndClickEffects : Game
     {
         GraphicsDeviceManager graphics;
-        ExplosionView explosionView;
-        ExplosionUpdater explosionUpdater;
-        SplitterSystem splitterSystem;
-        SmokeSimulator smokeSimulator;
+        SpriteBatch spriteBatch;
 
-
-        private float ExplosionScale;
-
-
-        public My_Explosion()
+        public SoundAndClickEffects()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
-            //sets the scale for the explosion
-            //1 is default size
-            ExplosionScale = 1f;
         }
-
-        
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -55,23 +37,10 @@ namespace ExplosionSimulator
         /// </summary>
         protected override void LoadContent()
         {
-            splitterSystem = new SplitterSystem(ExplosionScale);
-            smokeSimulator = new SmokeSimulator();
-            explosionUpdater = new ExplosionUpdater(splitterSystem, smokeSimulator);
-            explosionView = new ExplosionView(GraphicsDevice, Content, explosionUpdater, splitterSystem, smokeSimulator);
+            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //http://stackoverflow.com/questions/11632419/how-can-i-make-an-infinite-loop-with-5-second-pauses
-            System.Timers.Timer aTimer;
-            aTimer = new System.Timers.Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(ResetExplosion);
-            aTimer.Interval = 2500;
-            aTimer.Enabled = true;
             // TODO: use this.Content to load your game content here
-        }
-
-        private void ResetExplosion(object source, ElapsedEventArgs e)
-        {
-            explosionUpdater.ResetExplosion();
         }
 
         /// <summary>
@@ -91,22 +60,10 @@ namespace ExplosionSimulator
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
                 Exit();
-            }
 
-            
-            explosionUpdater.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
+            // TODO: Add your update logic here
 
-            if (splitterSystem.Particles != null)
-            {
-                splitterSystem.UpdateParticleLocation((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            if (smokeSimulator.getSmoke != null)
-            {
-                smokeSimulator.UpdateSmokeClouds((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            
             base.Update(gameTime);
         }
 
@@ -116,9 +73,9 @@ namespace ExplosionSimulator
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Gray);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            explosionView.Draw(ExplosionScale);
+            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }

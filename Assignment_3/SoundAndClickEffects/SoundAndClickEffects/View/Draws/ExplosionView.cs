@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using SmokeSimulation.View;
 
-namespace ExplosionSimulator.View
+namespace SoundAndClickEffects.View
 {
     class ExplosionView
     {
@@ -22,23 +22,22 @@ namespace ExplosionSimulator.View
         private SplitterSystem splitterSystem;
         private SmokeSimulator smokeSimulator;
 
-        private GraphicsDevice device;
 
         private Texture2D explosionTexture;
         private Texture2D particleTexture;
         private Texture2D smokeTexture;
 
         private SpriteBatch spriteBatch;
-        public ExplosionView(GraphicsDevice device, ContentManager content, ExplosionUpdater explosionUpdater, SplitterSystem splitterSystem, SmokeSimulator smokeSimulator)
+        public ExplosionView(SpriteBatch spriteBatch, Camera camera, ContentManager content, ExplosionUpdater explosionUpdater, SplitterSystem splitterSystem, SmokeSimulator smokeSimulator)
         {
-            this.device = device;
 
-            camera = new Camera(device);
+
+            this.camera = camera;
             this.explosionUpdater = explosionUpdater;
             this.splitterSystem = splitterSystem;
             this.smokeSimulator = smokeSimulator;
 
-            spriteBatch = new SpriteBatch(device);
+            this.spriteBatch = spriteBatch;
 
             explosionTexture = content.Load<Texture2D>("explosion.png");
             particleTexture = content.Load<Texture2D>("spark.png");

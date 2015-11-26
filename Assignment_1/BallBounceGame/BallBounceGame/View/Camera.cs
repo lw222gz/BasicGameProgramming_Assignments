@@ -11,18 +11,16 @@ namespace BallBounceGame.View
     class Camera
     {
 
-        private int WallThickness;
-        private int Dissort;
+        private int WallThickness = 5;
+        private int Dissort = 10;
 
         
 
         private GraphicsDevice device;
 
 
-        public Camera(GraphicsDevice device, int WallThickness, int Dissort)
+        public Camera(GraphicsDevice device)
         {
-            this.WallThickness = WallThickness;
-            this.Dissort = Dissort;
             UpdateGameResolutionData(device);
         }     
 
@@ -84,14 +82,46 @@ namespace BallBounceGame.View
         //returns a vector2 with the balls logical cord
         public Vector2 GetBallVisualCord(Texture2D ballTexture, Ball ball)
         {
-            Vector2 a = new Vector2(0.073f, 0.03f);
             Vector2 scale = GetBallScale(ballTexture, ball);
             float ballW = ballTexture.Bounds.Width * scale.X;
             float ballH = ballTexture.Bounds.Height * scale.Y;
-            float x = ball.BallLogicCords.X * (float)(device.Viewport.Width - (float)Dissort * 2);//
-            float y = ball.BallLogicCords.Y * (float)(device.Viewport.Height - (float)Dissort * 2);
-            x -= ballW / 2;
-            y -= ballH / 2;
+
+            /* DESCRIPTION FOR ROWS 119-123
+             * 
+            //the ball allways goes in a linear directions thus I used y = kx + m
+            //to decide the X and Y coordinates.
+            //calculation x-Coordinate example:
+            // Y = Wallthickness + Dissort;
+            // Y is the lower possible X cord
+             * 
+            // X = device.Viewport.Width - ballW - Dissort - WallThickness;
+            // X is the highest possible X cord for the ball
+             * 
+            //these points are an example in the 640x640 screen size. 
+            // X = 563
+            // Y = 15;
+            //point A = (0, Y)  15 is the lower possible X cord because the dissort and wallthickness are constants
+            //point B = (1, X) 
+            //delta of Y cords divided by the delta of the X cords:
+            // 563 - 15 / 1 - 0 = 548 / 1 = 548, k = 548
+             * 
+            //since the X cords will allways be the same (1 and 0, thus it will allways divide by 1) I can break the formula down to:
+            //k = X - Y;
+             * 
+            //Then for the value m
+            // 15 = 543 * 0 + m;
+            // 15 = m
+             * 
+            // and in turn m will allways be m = Y because when x = 0 then m MUST be the value of the lowest possible cord
+            // so m = Dissort + WallThickness
+             * 
+             * */
+            float m = Dissort + WallThickness;
+            float kX = (device.Viewport.Width - ballW - Dissort - WallThickness) - (Dissort + WallThickness);
+            float kY = (device.Viewport.Height - ballH - Dissort - WallThickness) - (Dissort + WallThickness);
+            float x = (kX * ball.BallLogicCords.X) + m;
+            float y = (kY * ball.BallLogicCords.Y) + m;
+
 
             return new Vector2(x, y);
         }

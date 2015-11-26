@@ -31,7 +31,7 @@ namespace ParticleSimulation.View
         //updates a particles position
         public void UpdatePosition(float gravityEffect)
         {
-            position = position + direction * gravityEffect;
+            position += direction * gravityEffect;
 
             //pulls the particle down.
             direction.Y += gravityEffect;

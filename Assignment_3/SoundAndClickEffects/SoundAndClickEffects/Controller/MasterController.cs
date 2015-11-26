@@ -1,10 +1,14 @@
-﻿using BallBounceGame.Model;
-using BallBounceGame.View;
+﻿using SoundAndClickEffects.View;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Timers;
+using ParticleSimulation.View;
+using SmokeSimulation.View;
+using SoundAndClickEffects.View.Draws;
+using BallBounceGame.Model;
 
-namespace BallBounceGame
+namespace SoundAndClickEffects
 {
     /// <summary>
     /// This is the main type for your game.
@@ -12,22 +16,28 @@ namespace BallBounceGame
     public class MasterController : Game
     {
         GraphicsDeviceManager graphics;
+        MainView mainView;
+        ExplosionUpdater explosionUpdater;
+        SplitterSystem splitterSystem;
+        SmokeSimulator smokeSimulator;
+
         BallSimulation ballSimulation;
-        BallView ballView;
+
+
+        private float ExplosionScale;
 
 
         public MasterController()
         {
             graphics = new GraphicsDeviceManager(this);
-            
-            //default size;
-            graphics.PreferredBackBufferWidth = 640;
-            graphics.PreferredBackBufferHeight = 640;
-            graphics.ApplyChanges();
-
             Content.RootDirectory = "Content";
-            
+
+            //sets the scale for the explosion
+            //1 is default size
+            ExplosionScale = 1f;
         }
+
+        
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -48,9 +58,25 @@ namespace BallBounceGame
         /// </summary>
         protected override void LoadContent()
         {
+            splitterSystem = new SplitterSystem(ExplosionScale);
+            smokeSimulator = new SmokeSimulator();
+            explosionUpdater = new ExplosionUpdater(splitterSystem, smokeSimulator);
+
             ballSimulation = new BallSimulation();
-            ballSimulation.CanTakeCommand = true;
-            ballView = new BallView(GraphicsDevice, Content, ballSimulation);
+            mainView = new MainView(GraphicsDevice, Content, ballSimulation);
+
+            //http://stackoverflow.com/questions/11632419/how-can-i-make-an-infinite-loop-with-5-second-pauses
+            System.Timers.Timer aTimer;
+            aTimer = new System.Timers.Timer();
+            aTimer.Elapsed += new ElapsedEventHandler(ResetExplosion);
+            aTimer.Interval = 2500;
+            aTimer.Enabled = true;
+            // TODO: use this.Content to load your game content here
+        }
+
+        private void ResetExplosion(object source, ElapsedEventArgs e)
+        {
+            explosionUpdater.ResetExplosion();
         }
 
         /// <summary>
@@ -69,46 +95,23 @@ namespace BallBounceGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape)) { 
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
             }
-            //I let the game only take maximum of 1 command per 500 milisec.
-            if (ballSimulation.CanTakeCommand)
-            {      
-                //keycommands for chaning resolution
 
-                //small resolution
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
-                    graphics.PreferredBackBufferWidth = 320;
-                    graphics.PreferredBackBufferHeight = 240;
-                    graphics.ApplyChanges();
+            
+            explosionUpdater.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-                    UpdateResolution();
-                }
-                //default resolution
-                else if (Keyboard.GetState().IsKeyDown(Keys.D))
-                {
-                    graphics.PreferredBackBufferHeight = 640;
-                    graphics.PreferredBackBufferWidth = 640;
-                    graphics.ApplyChanges();
-
-                    UpdateResolution();
-                }
-                //large resolution
-                else if (Keyboard.GetState().IsKeyDown(Keys.F))
-                {
-                    graphics.PreferredBackBufferHeight = 900;
-                    graphics.PreferredBackBufferWidth = 800;
-                    graphics.ApplyChanges();
-
-                    UpdateResolution();
-                }
+            if (splitterSystem.Particles != null)
+            {
+                splitterSystem.UpdateParticleLocation((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            if (smokeSimulator.getSmoke != null)
+            {
+                smokeSimulator.UpdateSmokeClouds((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             
-            //Updates the logic of the game
-            ballSimulation.Update(gameTime.TotalGameTime.TotalMilliseconds);          
-
             base.Update(gameTime);
         }
 
@@ -118,19 +121,11 @@ namespace BallBounceGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-            //draws the game
-            ballView.DrawGame();
+            GraphicsDevice.Clear(Color.Gray);
+
+            explosionView.Draw(ExplosionScale);
 
             base.Draw(gameTime);
-        }
-
-
-        //calls all the methods required for a resolution update
-        private void UpdateResolution()
-        {
-            ballSimulation.SetCoolDownForCommand();
-            ballView.UpdateGameResolution(GraphicsDevice);
         }
     }
 }
