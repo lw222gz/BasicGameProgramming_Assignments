@@ -9,42 +9,19 @@ namespace BallBounceGame.Model
 {
     class BallSimulation
     {
-        //The logical cords for the walls, these cords represent the STARTING point for being drawn (aka the top left corner)
-        private Vector2 northWall = new Vector2(0, 0);
-        private Vector2 eastWall = new Vector2(1, 0);
-        private Vector2 southWall = new Vector2(0, 1);
-        private Vector2 westWall = new Vector2(0, 0);
+        
 
         //ball obj
-        private Ball ball;
+        private List<Ball> balls;
 
         //values respresenting the time stamps the game was/ is updated
         double CurrentTime;
         double LastTimeMoved;
 
         //returnes the
-        public Ball getBall(){
-            return this.ball;
+        public List<Ball> getBalls(){
+            return this.balls;
         }
-
-        //properties of the wall drawpoint cords
-        public Vector2 NorthWall
-        {
-            get { return northWall; }
-        }
-        public Vector2 EastWall
-        {
-            get { return eastWall; }
-        }
-        public Vector2 SouthWall
-        {
-            get { return southWall; }
-        }
-        public Vector2 WestWall
-        {
-            get { return westWall; }
-        }
-        //--
 
         //Boolean if the application can take a keycommand
         public bool CanTakeCommand
@@ -56,7 +33,8 @@ namespace BallBounceGame.Model
         //initiates a new instance of the Ball class and calls the UpdateGameResolution to set base values.
         public BallSimulation()
         {
-            ball = new Ball();
+            balls = new List<Ball>(10);
+            balls.Add(new Ball());
         }
 
         //Updates the game:
@@ -68,14 +46,19 @@ namespace BallBounceGame.Model
             if (CurrentTime > LastTimeMoved)
             {
                 float diff = (float)(CurrentTime - LastTimeMoved);
-                this.ball.UpdateLocation(diff);
-                CheckCollision();
+                foreach (Ball b in balls)
+                {
+                    b.UpdateLocation(diff);
+                    CheckCollision(b);
+                }
+                
+                
                 LastTimeMoved = CurrentTime;
             }
         }
 
         //checks if the ball has collided with any wall, if so then it's direction is changed.
-        private void CheckCollision()
+        private void CheckCollision(Ball ball)
         {
             //East wall || West wall
             if (ball.BallLogicCords.X >= 1 || ball.BallLogicCords.X <= 0)

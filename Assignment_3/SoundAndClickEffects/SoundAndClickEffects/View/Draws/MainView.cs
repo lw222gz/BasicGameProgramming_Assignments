@@ -2,6 +2,7 @@
 using BallBounceGame.View;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SoundAndClickEffects.View.ParticleSimulations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,19 +18,26 @@ namespace SoundAndClickEffects.View.Draws
         private ExplosionView explosionView;
         private BallView ballView;
 
-        public MainView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation)
+        private float ExplosionScale;
+
+        public MainView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation, float ExplosionScale)
         {
             spriteBatch = new SpriteBatch(device);
             camera = new Camera(device);
 
-            explosionView = new ExplosionView(spriteBatch, camera, );
-            ballView = new BallView(spriteBatch, camera, ballSimulation);
+            explosionView = new ExplosionView(spriteBatch, camera, content);
+            ballView = new BallView(spriteBatch, camera, content, ballSimulation);
+
+            this.ExplosionScale = ExplosionScale;
         }
 
         
-        public void DrawGame()
+        public void DrawGame(List<Explosion> explosions)
         {
-
+            foreach (Explosion explosion in explosions)
+            {
+                explosionView.DrawExplosions(ExplosionScale, explosion);
+            }
         }
     }
 }

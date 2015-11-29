@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SmokeSimulation.View;
+using SoundAndClickEffects.View.ParticleSimulations;
 
 namespace SoundAndClickEffects.View
 {
@@ -18,24 +19,15 @@ namespace SoundAndClickEffects.View
         private const int NumFramesY = 8;
 
         private Camera camera;
-        private ExplosionUpdater explosionUpdater;
-        private SplitterSystem splitterSystem;
-        private SmokeSimulator smokeSimulator;
-
 
         private Texture2D explosionTexture;
         private Texture2D particleTexture;
         private Texture2D smokeTexture;
 
         private SpriteBatch spriteBatch;
-        public ExplosionView(SpriteBatch spriteBatch, Camera camera, ContentManager content, ExplosionUpdater explosionUpdater, SplitterSystem splitterSystem, SmokeSimulator smokeSimulator)
+        public ExplosionView(SpriteBatch spriteBatch, Camera camera, ContentManager content)
         {
-
-
             this.camera = camera;
-            this.explosionUpdater = explosionUpdater;
-            this.splitterSystem = splitterSystem;
-            this.smokeSimulator = smokeSimulator;
 
             this.spriteBatch = spriteBatch;
 
@@ -45,22 +37,22 @@ namespace SoundAndClickEffects.View
         }
 
 
-        public void Draw(float scale)
+        public void DrawExplosions(float scale, Explosion explosion)
         {
             //cords for main explotion sprite
-            int spriteXCord = (explosionTexture.Bounds.Width / NumFramesX) * explosionUpdater.FrameX;
-            int spriteYCord = (explosionTexture.Bounds.Height / NumFramesY) * explosionUpdater.FrameY;
+            int spriteXCord = (explosionTexture.Bounds.Width / NumFramesX) * explosion.ExplosionUpdater.FrameX;
+            int spriteYCord = (explosionTexture.Bounds.Height / NumFramesY) * explosion.ExplosionUpdater.FrameY;
 
             //draw code begins
             spriteBatch.Begin();
 
             //draws after smoke for the explosion
-            if (smokeSimulator.getSmoke != null)
+            if (explosion.SmokeSimulator.getSmoke != null)
             {
-                foreach (Smoke s in this.smokeSimulator.getSmoke)
+                foreach (Smoke s in explosion.SmokeSimulator.getSmoke)
                 {
                     spriteBatch.Draw(smokeTexture,
-                                    camera.GetVisualCords(s.Position + camera.getExplosionLogicalOrigin(), smokeTexture.Bounds.Width * scale, smokeTexture.Bounds.Height * scale),
+                                    camera.GetVisualCords(s.Position, smokeTexture.Bounds.Width * scale, smokeTexture.Bounds.Height * scale) + explosion.Location,
                                     null,
                                     new Color(s.Fade, s.Fade, s.Fade, s.Fade),
                                     s.Rotation,
@@ -72,12 +64,12 @@ namespace SoundAndClickEffects.View
             }
 
             //draws the explosions splitters
-            if (splitterSystem.Particles != null)
+            if (explosion.SplitterSystem.Particles != null)
             {
-                foreach (SplitterParticle p in splitterSystem.Particles)
+                foreach (SplitterParticle p in explosion.SplitterSystem.Particles)
                 {
                     spriteBatch.Draw(particleTexture,
-                                     camera.GetVisualCords(p.Position + camera.getExplosionLogicalOrigin(), particleTexture.Bounds.Width * 0.1f * scale, particleTexture.Bounds.Height * 0.1f * scale),
+                                     camera.GetVisualCords(p.Position, particleTexture.Bounds.Width * 0.1f * scale, particleTexture.Bounds.Height * 0.1f * scale) + explosion.Location,
                                      null,
                                      Color.White,
                                      0,
@@ -90,7 +82,7 @@ namespace SoundAndClickEffects.View
 
             //draws the main explosion, I draw it last so it shows above all other particles.
             spriteBatch.Draw(explosionTexture,
-                             camera.GetVisualCords(camera.getExplosionLogicalOrigin(), (explosionTexture.Bounds.Width / NumFramesX) * scale, (explosionTexture.Bounds.Height / NumFramesY) * scale),
+                             camera.GetVisualCords(new Vector2(0, 0), (explosionTexture.Bounds.Width / NumFramesX) * scale, (explosionTexture.Bounds.Height / NumFramesY) * scale) + explosion.Location,
                              new Rectangle(spriteXCord,
                                            spriteYCord,
                                            explosionTexture.Bounds.Width / NumFramesX,

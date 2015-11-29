@@ -7,6 +7,10 @@ using ParticleSimulation.View;
 using SmokeSimulation.View;
 using SoundAndClickEffects.View.Draws;
 using BallBounceGame.Model;
+using SoundAndClickEffects.View.ParticleSimulations;
+using System.Collections.Generic;
+using SoundAndClickEffects.Controller;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SoundAndClickEffects
 {
@@ -17,20 +21,19 @@ namespace SoundAndClickEffects
     {
         GraphicsDeviceManager graphics;
         MainView mainView;
-        ExplosionUpdater explosionUpdater;
-        SplitterSystem splitterSystem;
-        SmokeSimulator smokeSimulator;
-
         BallSimulation ballSimulation;
+        GameController gameController;
 
-
-        private float ExplosionScale;
-
+        private float ExplosionScale;       
 
         public MasterController()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = 760;
+            graphics.PreferredBackBufferHeight = 760;
+            graphics.ApplyChanges();
 
             //sets the scale for the explosion
             //1 is default size
@@ -58,25 +61,13 @@ namespace SoundAndClickEffects
         /// </summary>
         protected override void LoadContent()
         {
-            splitterSystem = new SplitterSystem(ExplosionScale);
-            smokeSimulator = new SmokeSimulator();
-            explosionUpdater = new ExplosionUpdater(splitterSystem, smokeSimulator);
-
+            //makes the mouse visible on the game screen
+            this.IsMouseVisible = true;
+            
+            gameController = new GameController(ExplosionScale, Content);            
+            
             ballSimulation = new BallSimulation();
-            mainView = new MainView(GraphicsDevice, Content, ballSimulation);
-
-            //http://stackoverflow.com/questions/11632419/how-can-i-make-an-infinite-loop-with-5-second-pauses
-            System.Timers.Timer aTimer;
-            aTimer = new System.Timers.Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(ResetExplosion);
-            aTimer.Interval = 2500;
-            aTimer.Enabled = true;
-            // TODO: use this.Content to load your game content here
-        }
-
-        private void ResetExplosion(object source, ElapsedEventArgs e)
-        {
-            explosionUpdater.ResetExplosion();
+            mainView = new MainView(GraphicsDevice, Content, ballSimulation, ExplosionScale);
         }
 
         /// <summary>
@@ -100,16 +91,11 @@ namespace SoundAndClickEffects
                 Exit();
             }
 
-            
-            explosionUpdater.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
+            gameController.ReadMouse();
 
-            if (splitterSystem.Particles != null)
+            foreach (Explosion explosion in gameController.Explosions)
             {
-                splitterSystem.UpdateParticleLocation((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            if (smokeSimulator.getSmoke != null)
-            {
-                smokeSimulator.UpdateSmokeClouds((float)gameTime.ElapsedGameTime.TotalSeconds);
+                explosion.UpdateExplosion((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             
             base.Update(gameTime);
@@ -123,7 +109,7 @@ namespace SoundAndClickEffects
         {
             GraphicsDevice.Clear(Color.Gray);
 
-            explosionView.Draw(ExplosionScale);
+            mainView.DrawGame(gameController.Explosions);
 
             base.Draw(gameTime);
         }

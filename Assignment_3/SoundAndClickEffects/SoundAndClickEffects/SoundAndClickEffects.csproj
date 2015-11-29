@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controller\GameController.cs" />
     <Compile Include="Controller\MasterController.cs" />
     <Compile Include="Model\Ball.cs" />
     <Compile Include="Model\BallSimulation.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="View\Draws\BallView.cs" />
     <Compile Include="View\Draws\ExplosionView.cs" />
     <Compile Include="View\Draws\MainView.cs" />
+    <Compile Include="View\ParticleSimulations\Explosion.cs" />
     <Compile Include="View\ParticleSimulations\ExplosionUpdater.cs" />
     <Compile Include="View\ParticleSimulations\SmokeSimulator.cs" />
     <Compile Include="View\ParticleSimulations\SplitterSystem.cs" />
@@ -65,6 +67,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\explosion.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\fire.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\particlesmoke.png">

@@ -12,6 +12,11 @@ namespace BallBounceGame.View
 {
     class BallView
     {
+        //The logical cords for the walls, these cords represent the STARTING point for being drawn (aka the top left corner)
+        private Vector2 northWall = new Vector2(0, 0);
+        private Vector2 eastWall = new Vector2(1, 0);
+        private Vector2 southWall = new Vector2(0, 1);
+        private Vector2 westWall = new Vector2(0, 0);
 
         private SpriteBatch spriteBatch;
         private Camera camera;
@@ -32,23 +37,35 @@ namespace BallBounceGame.View
         }
 
 
-        public void DrawGame()
+        public void DrawBalls()
         {
             spriteBatch.Begin();
 
             //GetWallVisualCord take a Vextor2 as argument, the vectors X and Y values represent the starting point of the drawn picture (aka the top left corner.)
             //west wall
-            spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(ballSimulation.WestWall), null, Color.White, 0, new Vector2(0,0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
+            spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(westWall), null, Color.White, 0, new Vector2(0,0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
             //east wall
-            spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(ballSimulation.EastWall), null, Color.White, 0, new Vector2(0, 0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
+            spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(eastWall), null, Color.White, 0, new Vector2(0, 0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
             //north wall
-            spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(ballSimulation.NorthWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
+            spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(northWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
             //south wall
-            spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(ballSimulation.SouthWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
+            spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(southWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
 
             //draws the ball
-            Ball ball = ballSimulation.getBall();
-            spriteBatch.Draw(BallTexture, camera.GetBallVisualCord(BallTexture, ball), null, Color.White, 0, new Vector2(0,0), camera.GetBallScale(BallTexture, ball), SpriteEffects.None, 0f);
+            List<Ball> balls = ballSimulation.getBalls();
+            foreach (Ball b in balls)
+            {
+                spriteBatch.Draw(BallTexture, 
+                                 camera.GetBallVisualCord(BallTexture, b), 
+                                 null, 
+                                 Color.White, 
+                                 0, 
+                                 new Vector2(0, 0), 
+                                 camera.GetBallScale(BallTexture, b), 
+                                 SpriteEffects.None, 
+                                 0f);
+            }
+            
             
             spriteBatch.End();
         }
@@ -59,12 +76,6 @@ namespace BallBounceGame.View
             BallTexture = content.Load<Texture2D>("Ball.png");
             HorizontalWall = content.Load<Texture2D>("WallHorizontal.png");
             VerticalWall = content.Load<Texture2D>("WallVertical.png");
-        }
-
-        //updates the game resolution
-        public void UpdateGameResolution(GraphicsDevice device)
-        {
-            this.camera.UpdateGameResolutionData(device);
         }
     }
 }

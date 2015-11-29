@@ -9,14 +9,16 @@ namespace BallBounceGame.Model
     class Ball
     {
         private Vector2 ballLogicCords;
-        private float ballLogicSpeedX = 0.5f;
-        private float ballLogicSpeedY = 0.5f;
+        private float ballLogicSpeedX;
+        private float ballLogicSpeedY;
         private const float ballLogicDiameter = 0.1f;
 
         
         public Ball()
         {
             this.ballLogicCords = GenerateRandomLogicCords();
+            ballLogicSpeedX = GenerateRandomSpeed();
+            ballLogicSpeedY = GenerateRandomSpeed();
         }
         public Vector2 BallLogicCords
         {
