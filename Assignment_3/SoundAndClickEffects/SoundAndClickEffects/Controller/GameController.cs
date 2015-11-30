@@ -17,28 +17,43 @@ namespace SoundAndClickEffects.Controller
         List<Explosion> explosions;
         SoundEffect fireSoundEffect;
 
+        private Vector2 explosionLocation;
+
         private float ExplosionScale;
 
         public List<Explosion> Explosions
         {
             get { return explosions; }
         }
+
+        //returns the visual cords of the mouse at the explosion
+        public Vector2 ExplosionLocation
+        {
+            get { return explosionLocation; }
+        }
         public GameController(float ExplosionScale, ContentManager content)
         {
             CoolDown = true;
             this.ExplosionScale = ExplosionScale;
             explosions = new List<Explosion>(20);
-            //this.fireSoundEffect = content.Load<SoundEffect>("fire.wav");
+            //how to load in sound:
+            //double click on Content.mgcb
+            //Edit -> Add -> Exsiting Item
+            //Chose the file and save.
+            this.fireSoundEffect = content.Load<SoundEffect>("fire");
         }
-        public void ReadMouse()
+        public bool ReadMouse()
         {
             if (CoolDown && Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 CoolDown = false;
-                explosions.Add(new Explosion(ExplosionScale, new Vector2(Mouse.GetState().X, Mouse.GetState().Y)));
-                //fireSoundEffect.Play();
+                explosionLocation = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                explosions.Add(new Explosion(ExplosionScale, explosionLocation));
+                fireSoundEffect.Play();
                 CoolDownTimer();
-            }          
+                return true;
+            }
+            return false;
         }
 
         public void CoolDownTimer()
@@ -56,6 +71,11 @@ namespace SoundAndClickEffects.Controller
         public void ResetCoolDown()
         {
             CoolDown = true;
+        }
+
+        public void RemoveExplosion(Explosion explosion)
+        {
+            explosions.Remove(explosion);
         }
     }
 }

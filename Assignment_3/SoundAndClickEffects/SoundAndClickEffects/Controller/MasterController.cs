@@ -40,7 +40,6 @@ namespace SoundAndClickEffects
             ExplosionScale = 1f;
         }
 
-        
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -91,11 +90,22 @@ namespace SoundAndClickEffects
                 Exit();
             }
 
-            gameController.ReadMouse();
-
-            foreach (Explosion explosion in gameController.Explosions)
+            //if readmouse returns true a click has just been made, therefore I need to check if it was a hit on a ball.
+            if (gameController.ReadMouse())
             {
-                explosion.UpdateExplosion((float)gameTime.ElapsedGameTime.TotalSeconds);
+                ballSimulation.CheckIfHit(mainView.GetLocalHitCords(gameController.ExplosionLocation), mainView.AimRadius);
+            }
+
+            //Updates all the balls positions
+            ballSimulation.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            //Animates the explosions
+            for (int i = 0; i < gameController.Explosions.Count; i ++)
+            {
+                if (gameController.Explosions[i].UpdateExplosion((float)gameTime.ElapsedGameTime.TotalSeconds))
+                {
+                    gameController.RemoveExplosion(gameController.Explosions[i]);
+                }
             }
             
             base.Update(gameTime);
@@ -109,6 +119,7 @@ namespace SoundAndClickEffects
         {
             GraphicsDevice.Clear(Color.Gray);
 
+            //draws the game
             mainView.DrawGame(gameController.Explosions);
 
             base.Draw(gameTime);

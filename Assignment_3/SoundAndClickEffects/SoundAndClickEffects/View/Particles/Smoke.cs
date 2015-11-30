@@ -9,7 +9,6 @@ namespace SmokeSimulation.View
     class Smoke
     {
         private Vector2 position;
-        private Vector2 direction;
 
         //measured in radian
         private float rotation;
@@ -74,11 +73,6 @@ namespace SmokeSimulation.View
 
             //calculation for the size of the smoke
             size = minSize + lifePercent * maxSize;
-
-            if (lifePercent >= 1)
-            {
-                size = 0;
-            }
         }
     }
 }

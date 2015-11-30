@@ -58,7 +58,7 @@ namespace BallBounceGame.View
                 spriteBatch.Draw(BallTexture, 
                                  camera.GetBallVisualCord(BallTexture, b), 
                                  null, 
-                                 Color.White, 
+                                 new Color(b.Fade, b.Fade, b.Fade, b.Fade), 
                                  0, 
                                  new Vector2(0, 0), 
                                  camera.GetBallScale(BallTexture, b), 

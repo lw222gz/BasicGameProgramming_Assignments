@@ -14,6 +14,9 @@ namespace SoundAndClickEffects.View.ParticleSimulations
         private SplitterSystem splitterSystem;
         private SmokeSimulator smokeSimulator;
 
+        private float TotalLifeSpan = 2.0f;
+        private float timeExsisted;
+
 
         private Vector2 location;
         public Explosion(float ExplosionScale, Vector2 location)
@@ -22,7 +25,7 @@ namespace SoundAndClickEffects.View.ParticleSimulations
             this.smokeSimulator = new SmokeSimulator();
             this.explosionUpdater = new ExplosionUpdater(splitterSystem, smokeSimulator);
 
-            //location of the explosion in PIXELs
+            //location of the explosion in VISUAL coordinates
             this.location = location;
         }
 
@@ -39,8 +42,10 @@ namespace SoundAndClickEffects.View.ParticleSimulations
             get { return smokeSimulator; }
         }
 
-        public void UpdateExplosion(float timeElapsed)
+        public bool UpdateExplosion(float timeElapsed)
         {
+            timeExsisted += timeElapsed;
+
             explosionUpdater.UpdateFrame(timeElapsed);
 
             if (splitterSystem.Particles != null)
@@ -51,6 +56,12 @@ namespace SoundAndClickEffects.View.ParticleSimulations
             {
                 smokeSimulator.UpdateSmokeClouds(timeElapsed);
             }
+
+            if (timeExsisted / TotalLifeSpan >= 1)
+            {
+                return true;
+            }
+            return false;
         }
 
         public Vector2 Location

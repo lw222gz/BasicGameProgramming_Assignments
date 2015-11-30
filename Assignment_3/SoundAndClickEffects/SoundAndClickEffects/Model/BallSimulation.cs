@@ -14,87 +14,64 @@ namespace BallBounceGame.Model
         //ball obj
         private List<Ball> balls;
 
-        //values respresenting the time stamps the game was/ is updated
-        double CurrentTime;
-        double LastTimeMoved;
-
         //returnes the
         public List<Ball> getBalls(){
             return this.balls;
         }
 
-        //Boolean if the application can take a keycommand
-        public bool CanTakeCommand
-        {
-            get;
-            set;
-        }
-
         //initiates a new instance of the Ball class and calls the UpdateGameResolution to set base values.
         public BallSimulation()
         {
+            Random rnd = new Random();
             balls = new List<Ball>(10);
-            balls.Add(new Ball());
+            for (int i = 0; i < 10; i++)
+            {
+                balls.Add(new Ball(rnd));
+            }
+                
         }
 
         //Updates the game:
         //- Updates ball position
         //- Checks for collisions
-        public void Update(double timeSpan)
+        public void Update(float timeElapsed)
         {
-            CurrentTime = timeSpan;
-            if (CurrentTime > LastTimeMoved)
+            foreach (Ball b in balls)
             {
-                float diff = (float)(CurrentTime - LastTimeMoved);
-                foreach (Ball b in balls)
-                {
-                    b.UpdateLocation(diff);
-                    CheckCollision(b);
-                }
-                
-                
-                LastTimeMoved = CurrentTime;
-            }
+                b.UpdateLocation(timeElapsed);
+                CheckCollision(b);
+            }               
         }
 
         //checks if the ball has collided with any wall, if so then it's direction is changed.
         private void CheckCollision(Ball ball)
         {
             //East wall || West wall
-            if (ball.BallLogicCords.X >= 1 || ball.BallLogicCords.X <= 0)
+            if (ball.BallLogicCords.X + ball.BallLogicDiameter >= 1 || ball.BallLogicCords.X <= 0)
             {                
                 ball.CollisionVerticalWall();
             }
 
             //South wall || North wall
-            if (ball.BallLogicCords.Y >= 1 || ball.BallLogicCords.Y <= 0)
+            if (ball.BallLogicCords.Y + ball.BallLogicDiameter>= 1 || ball.BallLogicCords.Y <= 0)
             {
                 ball.CollisionHorizontalWall();
             }
         }
 
-        //Makes user abel to execute a command again
-        public void ResetTimeForCommand()
+        public void CheckIfHit(Vector2 explosionLocation, float aimRadius)
         {
-            CanTakeCommand = true;
-        }
-
-        //initiates a cooldown for taking commands form the user
-        public void SetCoolDownForCommand()
-        {
-            CanTakeCommand = false;
-            //Resets the boolean after 500 milliseconds.
-            //source: http://stackoverflow.com/questions/545533/c-sharp-delayed-function-calls
-            System.Threading.Timer timer = null;
-            timer = new System.Threading.Timer((obj) =>
+            
+            foreach (Ball b in balls)
             {
-                ResetTimeForCommand();
-                timer.Dispose();
-            }, null, 500, System.Threading.Timeout.Infinite);
+                if (b.BallLogicCords.X + b.BallLogicDiameter/2 <= explosionLocation.X + aimRadius &&
+                    b.BallLogicCords.X + b.BallLogicDiameter/2 >= explosionLocation.X - aimRadius &&
+                    b.BallLogicCords.Y + b.BallLogicDiameter/2 <= explosionLocation.Y + aimRadius &&
+                    b.BallLogicCords.Y + b.BallLogicDiameter/2 >= explosionLocation.Y - aimRadius)
+                {
+                    b.Dead();
+                }            
+            }
         }
-
-        
-
-        
     }
 }
