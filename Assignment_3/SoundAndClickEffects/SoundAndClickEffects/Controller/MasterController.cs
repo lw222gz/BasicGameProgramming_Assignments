@@ -11,6 +11,7 @@ using SoundAndClickEffects.View.ParticleSimulations;
 using System.Collections.Generic;
 using SoundAndClickEffects.Controller;
 using Microsoft.Xna.Framework.Audio;
+using SoundAndClickEffects.Model;
 
 namespace SoundAndClickEffects
 {
@@ -22,6 +23,7 @@ namespace SoundAndClickEffects
         GraphicsDeviceManager graphics;
         MainView mainView;
         BallSimulation ballSimulation;
+        PlayerAim playerAim;
         GameController gameController;
 
         private float ExplosionScale;       
@@ -37,7 +39,7 @@ namespace SoundAndClickEffects
 
             //sets the scale for the explosion
             //1 is default size
-            ExplosionScale = 1f;
+            ExplosionScale = 1.3f;
         }
 
 
@@ -66,7 +68,8 @@ namespace SoundAndClickEffects
             gameController = new GameController(ExplosionScale, Content);            
             
             ballSimulation = new BallSimulation();
-            mainView = new MainView(GraphicsDevice, Content, ballSimulation, ExplosionScale);
+            playerAim = new PlayerAim();
+            mainView = new MainView(GraphicsDevice, Content, ballSimulation, ExplosionScale, playerAim.AimRadius);
         }
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace SoundAndClickEffects
             //if readmouse returns true a click has just been made, therefore I need to check if it was a hit on a ball.
             if (gameController.ReadMouse())
             {
-                ballSimulation.CheckIfHit(mainView.GetLocalHitCords(gameController.ExplosionLocation), mainView.AimRadius);
+                ballSimulation.CheckIfHit(mainView.GetLogicalHitCords(gameController.ExplosionLocation), playerAim.AimRadius);
             }
 
             //Updates all the balls positions

@@ -8,8 +8,6 @@ namespace SmokeSimulation.View
 {
     class Smoke
     {
-        private Vector2 position;
-
         //measured in radian
         private float rotation;
         private float rotationSpeed;
@@ -26,6 +24,19 @@ namespace SmokeSimulation.View
         //measuerd in precentage (0-1)
         private float fade;
 
+        //generates all required stats for a smoke cloud
+        public Smoke(Random rand)
+        {
+            fade = 1f;
+            timeLived = 0f;
+            size = 0f;
+
+            //random rotation settings for each smoke
+            rotation = (float)rand.Next(0, 6);
+            rotationSpeed = (float)rand.NextDouble();
+        }
+
+        //Properties for private varibles START
         public float Size
         {
             get { return size; }
@@ -38,25 +49,9 @@ namespace SmokeSimulation.View
         {
             get { return fade; }
         }
-        public Vector2 Position
-        {
-            get { return position; }
-        }
-
-
-        //generates all required stats for a smoke cloud
-        public void GenerateNewSmokeStats(Random rand)
-        {
-            fade = 1f;
-            timeLived = 0f;
-            size = 0f;
-            //start position
-            position = new Vector2(0f, 0f);
-            //random rotation settings for each smoke
-            rotation = (float)rand.Next(0, 20) / 10f;
-            rotationSpeed = (float)rand.NextDouble();
-        }
-
+        //-- Properties for private varibles END
+        
+        //Updates the smoke clouds visual values
         public void UpdateSmoke(float timeEffect)
         {
             //second representation of the total life span for this.smoke

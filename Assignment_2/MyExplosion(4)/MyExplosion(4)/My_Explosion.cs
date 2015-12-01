@@ -27,6 +27,11 @@ namespace ExplosionSimulator
         public My_Explosion()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 640;
+            graphics.PreferredBackBufferWidth = 640;
+            graphics.ApplyChanges();
+
+
             Content.RootDirectory = "Content";
 
             //sets the scale for the explosion

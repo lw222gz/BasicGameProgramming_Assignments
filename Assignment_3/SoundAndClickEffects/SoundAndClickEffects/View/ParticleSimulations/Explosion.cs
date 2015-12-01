@@ -14,21 +14,29 @@ namespace SoundAndClickEffects.View.ParticleSimulations
         private SplitterSystem splitterSystem;
         private SmokeSimulator smokeSimulator;
 
+        //explosion lifetime in seconds
         private float TotalLifeSpan = 2.0f;
+        //it's value represents how long the explosion has existed
         private float timeExsisted;
 
-
+        //represens the location of the explosion
         private Vector2 location;
+
+        //initiates a new set of classes used to an explosion
         public Explosion(float ExplosionScale, Vector2 location)
         {
             this.splitterSystem = new SplitterSystem(ExplosionScale);
             this.smokeSimulator = new SmokeSimulator();
             this.explosionUpdater = new ExplosionUpdater(splitterSystem, smokeSimulator);
 
-            //location of the explosion in VISUAL coordinates
             this.location = location;
         }
 
+        //Properties of private varibles START
+        public Vector2 Location
+        {
+            get { return location; }
+        }       
         public ExplosionUpdater ExplosionUpdater
         {
             get { return explosionUpdater; }
@@ -41,7 +49,9 @@ namespace SoundAndClickEffects.View.ParticleSimulations
         {
             get { return smokeSimulator; }
         }
+        //-- Properties of private varibles END
 
+        //calls functions to update the visual effects of an explosion
         public bool UpdateExplosion(float timeElapsed)
         {
             timeExsisted += timeElapsed;
@@ -57,19 +67,12 @@ namespace SoundAndClickEffects.View.ParticleSimulations
                 smokeSimulator.UpdateSmokeClouds(timeElapsed);
             }
 
+            //checks if an explosion has exceeded it's lifespan
             if (timeExsisted / TotalLifeSpan >= 1)
             {
                 return true;
             }
             return false;
-        }
-
-        public Vector2 Location
-        {
-            get
-            {
-                return location;
-            }
         }
     }
 }

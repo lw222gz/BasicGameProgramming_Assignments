@@ -8,16 +8,22 @@ namespace BallBounceGame.Model
 {
     class Ball
     {
+        //logical coords for the ball (0-1)
         private Vector2 ballLogicCords;
+        //speed per seconds in logical coords
         private float ballLogicSpeedX;
         private float ballLogicSpeedY;
-        private const float ballLogicDiameter = 0.05f;
+        //radius of the ball in a logical measurement
+        private const float ballLogicRadius = 0.025f;
 
-        private float fade;
+        //set to true if the ball dies, then it nolonger gets updated.
         private bool isDead;
+        //fade is used when a ball dies.
+        private float fade;
+        
         Random rnd;
 
-        
+        //initates a new ball with random direction and spawn point.
         public Ball(Random rnd)           
         {
             isDead = false;
@@ -37,19 +43,26 @@ namespace BallBounceGame.Model
                 ballLogicSpeedY = -ballLogicSpeedY;
             }
         }
+
+        //properties of private varibles START
         public Vector2 BallLogicCords
         {
             get { return ballLogicCords; }      
         }
 
-        public float BallLogicDiameter
+        public float BallLogicRadius
         {
-            get { return ballLogicDiameter; }
+            get { return ballLogicRadius; }
         }
         public float Fade
         {
             get { return fade; }
         }
+        public bool IsDead
+        {
+            get { return isDead; }
+        }
+        //-- properties of private varibles END
 
         //changes the position of a ball
         public void UpdateLocation(float time)
@@ -62,60 +75,54 @@ namespace BallBounceGame.Model
         //also sets the Y Cords of the ball to the place of collision
         public void CollisionHorizontalWall()
         {
-            if (!isDead) { 
-                float NewSpeed = GenerateRandomSpeed();
+            float NewSpeed = GenerateRandomSpeed();
             
-                if (ballLogicCords.Y <= 0)
-                {
-                    ballLogicCords.Y = 0;
-                    ballLogicSpeedY = NewSpeed;
-                }
-                else
-                {
-                    ballLogicCords.Y = 1 - ballLogicDiameter;
-                    ballLogicSpeedY = -NewSpeed;
-                }
+            if (ballLogicCords.Y <= 0 + ballLogicRadius)
+            {
+                ballLogicCords.Y = 0 + ballLogicRadius;
+                ballLogicSpeedY = NewSpeed;
             }
+            else
+            {
+                ballLogicCords.Y = 1 - ballLogicRadius;
+                ballLogicSpeedY = -NewSpeed;
+            }
+            
         }
 
         //Changes the speed aswell as the direction in the vertical direction. 
         //also sets the X Cords of the ball to the place of collision
         public void CollisionVerticalWall()
-        {
-            if (!isDead)
-            {          
-                //I set the X value because if the ball has passed value 1 or 0 
-                float NewSpeed = GenerateRandomSpeed();
+        { 
+            //I set the X value because if the ball has passed value 1 or 0 
+            float NewSpeed = GenerateRandomSpeed();
 
-                if (ballLogicCords.X <= 0)
-                {
-                    ballLogicCords.X = 0;
-                    ballLogicSpeedX = NewSpeed;
-                }
-                else
-                {
-                    ballLogicCords.X = 1 - ballLogicDiameter;
-                    ballLogicSpeedX = -NewSpeed;
-                }
+            if (ballLogicCords.X <= 0 + ballLogicRadius)
+            {
+                ballLogicCords.X = 0 + ballLogicRadius;
+                ballLogicSpeedX = NewSpeed;
             }
+            else
+            {
+                ballLogicCords.X = 1 - ballLogicRadius;
+                ballLogicSpeedX = -NewSpeed;
+            }
+            
         }
 
         //returns a random logic coordinate between 0.1 and 0.9
         private Vector2 GenerateRandomLogicCords()
         {
             //Random rnd = new Random();
-            int x = rnd.Next(10, 90);
-            int y = rnd.Next(10, 90);
-            float xCord = (float)x / 100f;
-            float yCord = (float)y / 100f;
-            return new Vector2(xCord, yCord);
+            float x = (float)(rnd.Next(10, 90)) / 100f;
+            float y = (float)(rnd.Next(10, 90)) / 100f;
+            return new Vector2(x, y);
         }
 
+        //returns a new speed between 0.15 - 1.05 logical cords per second
         private float GenerateRandomSpeed()
         {
-            //Random rnd = new Random();
-            int speed = rnd.Next(15, 105);
-            return (float)speed/100f;
+            return (float)(rnd.Next(15, 105)) / 100f;
         }
 
         internal void Dead()

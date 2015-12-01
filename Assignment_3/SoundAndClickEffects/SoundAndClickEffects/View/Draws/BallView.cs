@@ -21,9 +21,16 @@ namespace BallBounceGame.View
         private SpriteBatch spriteBatch;
         private Camera camera;
         private BallSimulation ballSimulation;
-        Texture2D BallTexture;
-        Texture2D HorizontalWall;
-        Texture2D VerticalWall;
+
+        //vector2 representing the scale of the balls, gets value from method in camera.
+        private Vector2 ballScale;
+
+        //list of balls in the game, value of the list is read from the model
+        private List<Ball> balls;
+        //texture refrences. Gets their values in LoadContent method.
+        private Texture2D BallTexture;
+        private Texture2D HorizontalWall;
+        private Texture2D VerticalWall;
 
         //sets values to the private object varibles.
         public BallView(SpriteBatch spriteBatch, Camera camera, ContentManager content, BallSimulation ballSimulation)
@@ -32,8 +39,11 @@ namespace BallBounceGame.View
             this.camera = camera;
             this.ballSimulation = ballSimulation;
 
-            //Loads all graphical images used for the application
-            LoadGraphics(content);
+            balls = ballSimulation.getBalls();
+            
+
+            //Loads all textures for this view
+            LoadContent(content);
         }
 
 
@@ -41,7 +51,6 @@ namespace BallBounceGame.View
         {
             spriteBatch.Begin();
 
-            //GetWallVisualCord take a Vextor2 as argument, the vectors X and Y values represent the starting point of the drawn picture (aka the top left corner.)
             //west wall
             spriteBatch.Draw(VerticalWall, camera.GetWallVisualCord(westWall), null, Color.White, 0, new Vector2(0,0), camera.GetVerticalWallScale(VerticalWall), SpriteEffects.None, 0f);
             //east wall
@@ -51,17 +60,18 @@ namespace BallBounceGame.View
             //south wall
             spriteBatch.Draw(HorizontalWall, camera.GetWallVisualCord(southWall), null, Color.White, 0, new Vector2(0, 0), camera.GetHorizontalWallScale(HorizontalWall), SpriteEffects.None, 0f);
 
-            //draws the ball
-            List<Ball> balls = ballSimulation.getBalls();
+            //draws the balls       
             foreach (Ball b in balls)
             {
+                ballScale = camera.GetBallScale(BallTexture, b.BallLogicRadius);
+
                 spriteBatch.Draw(BallTexture, 
-                                 camera.GetBallVisualCord(BallTexture, b), 
+                                 camera.GetVisualCords(b.BallLogicCords), 
                                  null, 
                                  new Color(b.Fade, b.Fade, b.Fade, b.Fade), 
-                                 0, 
-                                 new Vector2(0, 0), 
-                                 camera.GetBallScale(BallTexture, b), 
+                                 0,
+                                 new Vector2((BallTexture.Bounds.Width * ballScale.X) / 2, (BallTexture.Bounds.Height * ballScale.Y) / 2), 
+                                 ballScale, 
                                  SpriteEffects.None, 
                                  0f);
             }
@@ -71,7 +81,7 @@ namespace BallBounceGame.View
         }
 
         //Loads in all textures to private varibles
-        private void LoadGraphics(ContentManager content)
+        private void LoadContent(ContentManager content)
         {
             BallTexture = content.Load<Texture2D>("Ball.png");
             HorizontalWall = content.Load<Texture2D>("WallHorizontal.png");

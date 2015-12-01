@@ -22,30 +22,30 @@ namespace SoundAndClickEffects.View.Draws
         private GraphicsDevice device;
 
         private Texture2D aim;
-        private float aimRadius = 0.1f;
-        private float ExplosionScale;
 
-        public float AimRadius
-        {
-            get { return aimRadius; }
-        }
+        private int aimX;
+        private int aimY;
+        private int aimSizeX;
+        private int aimSizeY;
 
-        public MainView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation, float ExplosionScale)
+        //initiates other views
+        public MainView(GraphicsDevice device, ContentManager content, BallSimulation ballSimulation, float ExplosionScale, float aimRadius)
         {
             this.device = device;
             spriteBatch = new SpriteBatch(device);
             camera = new Camera(device);
 
-            explosionView = new ExplosionView(spriteBatch, camera, content);
+            explosionView = new ExplosionView(spriteBatch, camera, content, ExplosionScale);
             ballView = new BallView(spriteBatch, camera, content, ballSimulation);
 
-            this.ExplosionScale = ExplosionScale;
-
-
             aim = content.Load<Texture2D>("Aim.png");
+
+            aimSizeX = (int)(device.Viewport.Width * (aimRadius * 2));
+            aimSizeY = (int)(device.Viewport.Height * (aimRadius * 2));         
         }
 
-        
+        //- calls the draw functions in BallView and ExplosionView classes
+        //- draws the aim for the player.
         public void DrawGame(List<Explosion> explosions)
         {         
             
@@ -53,30 +53,26 @@ namespace SoundAndClickEffects.View.Draws
 
             foreach (Explosion explosion in explosions)
             {
-                explosionView.DrawExplosions(ExplosionScale, explosion);
+                explosionView.DrawExplosions(explosion);
             }
 
-            int sizeX = (int)(device.Viewport.Width * (aimRadius*2));
-            int sizeY = (int)(device.Viewport.Height * (aimRadius*2));
-            int x = Mouse.GetState().X - sizeX / 2;
-            int y = Mouse.GetState().Y - sizeY / 2;
+
+            //position of the aim
+            aimX = Mouse.GetState().X - aimSizeX / 2;
+            aimY = Mouse.GetState().Y - aimSizeY / 2;
 
             spriteBatch.Begin();
 
-            //draws the aim circle around the mouse
             spriteBatch.Draw(aim, 
-                            new Rectangle(x , y, sizeX, sizeY), 
+                            new Rectangle(aimX, aimY, aimSizeX, aimSizeY), 
                             Color.White);
 
             spriteBatch.End();
         }
 
 
-
-
-
-
-        public Vector2 GetLocalHitCords(Vector2 explosionLocation)
+        //call on a camera function that turns the mouse visual coords to  logical coords and returns it.
+        public Vector2 GetLogicalHitCords(Vector2 explosionLocation)
         {
             return camera.GetLogicalCords(explosionLocation);
         }

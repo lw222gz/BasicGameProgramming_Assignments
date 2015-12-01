@@ -13,29 +13,34 @@ namespace SoundAndClickEffects.View
         //I have these as floats because they are used in calculations with float values
         private float Dissort = 10;
         private float WallThickness = 5;
-
+        private float gameBoardWidth;
+        private float gameBoardHeight;
+        
         private GraphicsDevice device;
 
         public Camera(GraphicsDevice device)
         {
             this.device = device;
+
+            gameBoardWidth = device.Viewport.Width - ((Dissort + WallThickness) * 2);
+            gameBoardHeight = device.Viewport.Height - ((Dissort + WallThickness) * 2);
         }
 
         //returns visual cords for a picture, this one carries no effect on the dissort.
-        public Vector2 GetVisualCords(Vector2 logicalCords, float imageWidth, float imageHeight)
+        public Vector2 GetVisualCords(Vector2 LogicPosition)
         {
-            return new Vector2((this.device.Viewport.Width * logicalCords.X) - imageWidth / 2,
-                                (this.device.Viewport.Height * logicalCords.Y) - imageHeight / 2);
+            float x = LogicPosition.X * gameBoardWidth;
+            float y = LogicPosition.Y * gameBoardHeight;
+
+            return new Vector2(x, y);
         }
 
-        //returns the visual cords for a ball. this one includes the effect of the dissort.
-        public Vector2 GetBallVisualCord(Texture2D ballTexture, Ball ball)
+
+        //returns a vector2 with the scale for a ball in x and y led
+        public Vector2 GetBallScale(Texture2D ballTexture, float BallRadius)
         {
-            float totalDissort = Dissort + WallThickness;
-
-            float x = ball.BallLogicCords.X * (device.Viewport.Width - totalDissort * 2) + totalDissort;
-            float y = ball.BallLogicCords.Y * (device.Viewport.Height - totalDissort * 2) + totalDissort;
-
+            float x = (gameBoardWidth * (BallRadius * 2)) / ballTexture.Bounds.Width;
+            float y = (gameBoardHeight * (BallRadius * 2)) / ballTexture.Bounds.Height;
             return new Vector2(x, y);
         }
 
@@ -62,17 +67,8 @@ namespace SoundAndClickEffects.View
             }
 
             return new Vector2(x, y);
-        }
-
-        
-
-        //returns a vector2 with the scale for a ball in x and y led
-        public Vector2 GetBallScale(Texture2D ballTexture, Ball ball)
-        {
-            float x = ((device.Viewport.Width - (float)Dissort * 2) * ball.BallLogicDiameter) / ballTexture.Bounds.Width;
-            float y = ((device.Viewport.Height - (float)Dissort * 2) * ball.BallLogicDiameter) / ballTexture.Bounds.Height;
-            return new Vector2(x, y);
-        }
+        }       
+  
 
         internal Vector2 GetVerticalWallScale(Texture2D VerticalWall)
         {
@@ -91,8 +87,8 @@ namespace SoundAndClickEffects.View
         //takes visual vector2 cords as a param and returns a vector2 with logical representations of the visual cords
         public Vector2 GetLogicalCords(Vector2 VisualLocation)
         {
-            return new Vector2((float)VisualLocation.X / device.Viewport.Width, 
-                               (float)VisualLocation.Y / device.Viewport.Height);
+            return new Vector2((float)(VisualLocation.X - Dissort - WallThickness) / gameBoardWidth, 
+                               (float)(VisualLocation.Y - Dissort - WallThickness) / gameBoardHeight);
         }
     }
 }

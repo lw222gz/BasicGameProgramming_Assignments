@@ -9,37 +9,44 @@ namespace BallBounceGame.Model
 {
     class BallSimulation
     {
-        
-
+        //amount of ball tagets that spawn.
+        private const int amountOfBalls = 20;
         //ball obj
         private List<Ball> balls;
-
-        //returnes the
-        public List<Ball> getBalls(){
-            return this.balls;
-        }
 
         //initiates a new instance of the Ball class and calls the UpdateGameResolution to set base values.
         public BallSimulation()
         {
             Random rnd = new Random();
-            balls = new List<Ball>(10);
-            for (int i = 0; i < 10; i++)
+            balls = new List<Ball>(amountOfBalls);
+            for (int i = 0; i < balls.Capacity; i++)
             {
                 balls.Add(new Ball(rnd));
             }
-                
+
         }
 
+        //Properties for private varibles START
+        public List<Ball> getBalls(){
+            return this.balls;
+        }
+        //--Properties for private varibles END
+       
+
         //Updates the game:
+        //IF the ball is not dead
         //- Updates ball position
         //- Checks for collisions
         public void Update(float timeElapsed)
         {
             foreach (Ball b in balls)
             {
-                b.UpdateLocation(timeElapsed);
-                CheckCollision(b);
+                if (!b.IsDead)
+                {
+                    b.UpdateLocation(timeElapsed);
+                    CheckCollision(b);
+                }
+                
             }               
         }
 
@@ -47,27 +54,27 @@ namespace BallBounceGame.Model
         private void CheckCollision(Ball ball)
         {
             //East wall || West wall
-            if (ball.BallLogicCords.X + ball.BallLogicDiameter >= 1 || ball.BallLogicCords.X <= 0)
+            if (ball.BallLogicCords.X + ball.BallLogicRadius >= 1 || ball.BallLogicCords.X - ball.BallLogicRadius <= 0)
             {                
                 ball.CollisionVerticalWall();
             }
 
             //South wall || North wall
-            if (ball.BallLogicCords.Y + ball.BallLogicDiameter>= 1 || ball.BallLogicCords.Y <= 0)
+            if (ball.BallLogicCords.Y + ball.BallLogicRadius >= 1 || ball.BallLogicCords.Y - ball.BallLogicRadius <= 0)
             {
                 ball.CollisionHorizontalWall();
             }
         }
 
+        //checks if a ball is hit by an explosion, if so it kills it.
         public void CheckIfHit(Vector2 explosionLocation, float aimRadius)
-        {
-            
+        {           
             foreach (Ball b in balls)
             {
-                if (b.BallLogicCords.X + b.BallLogicDiameter/2 <= explosionLocation.X + aimRadius &&
-                    b.BallLogicCords.X + b.BallLogicDiameter/2 >= explosionLocation.X - aimRadius &&
-                    b.BallLogicCords.Y + b.BallLogicDiameter/2 <= explosionLocation.Y + aimRadius &&
-                    b.BallLogicCords.Y + b.BallLogicDiameter/2 >= explosionLocation.Y - aimRadius)
+                if (b.BallLogicCords.X + b.BallLogicRadius <= explosionLocation.X + aimRadius &&
+                    b.BallLogicCords.X - b.BallLogicRadius >= explosionLocation.X - aimRadius &&
+                    b.BallLogicCords.Y + b.BallLogicRadius <= explosionLocation.Y + aimRadius &&
+                    b.BallLogicCords.Y - b.BallLogicRadius >= explosionLocation.Y - aimRadius)
                 {
                     b.Dead();
                 }            

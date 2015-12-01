@@ -22,16 +22,6 @@ namespace ParticleSimulation.View
         private float Speed;
         private float size;
 
-        public float Size
-        {
-            get { return size; }
-        }
-
-        public Vector2 Position
-        {
-            get { return position; }
-        }
-
         //generates a random direction and sets the start position of the particle to 0,0 (that being in the middle of the explosion location)
         public SplitterParticle(Random rand, float ExplosionScale)
         {
@@ -46,10 +36,24 @@ namespace ParticleSimulation.View
             //sets base values for the particle
             size = 1;
             TimeLived = 0;
-            position = new Vector2(0, 0);            
+            position = new Vector2(0, 0);
         }
 
-        //updates a particles position
+        //properties of private varibles START
+        public float Size
+        {
+            get { return size; }
+        }
+
+        public Vector2 Position
+        {
+            get { return position; }
+        }
+        //--properties of private varibles END
+
+        
+
+        //updates a particles position and size
         public void UpdatePosition(float time)
         {
             position += (direction * time) * Speed;
@@ -61,11 +65,6 @@ namespace ParticleSimulation.View
             {
                 size = 0;
             }
-
         }
-
-        
-
-        
     }
 }

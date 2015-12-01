@@ -15,7 +15,7 @@ namespace SoundAndClickEffects.View
         private const int numberOfFrames = 24;
         private const float maxTime = 0.6f;
         private const int StartSplitter = 4;
-        private const int StartSmoke = 10;
+        private const int StartSmoke = 6;
 
         private float totalTime;
 
@@ -27,14 +27,18 @@ namespace SoundAndClickEffects.View
         private bool hasParticlesSpawned;
         private bool hasSmokeSpawned;
 
+        //sets values used for the new explosion
         public ExplosionUpdater(SplitterSystem splitterSystem, SmokeSimulator smokeSimulator)
         {
             this.splitterSystem = splitterSystem;
             this.smokeSimulator = smokeSimulator;
-            ResetExplosion();
+
+            hasSmokeSpawned = false;
+            hasParticlesSpawned = false;
+            totalTime = 0;
         }
 
-
+        // properties of private varibles START
         public int FrameX
         {
             get { return frameX; }
@@ -43,6 +47,7 @@ namespace SoundAndClickEffects.View
         {
             get { return frameY; }
         }
+        //-- properties of private varibles END
 
         //Updates the main explosion and adds more particle effects as time goes on
         public void UpdateFrame(float timeElapsed)
@@ -66,14 +71,6 @@ namespace SoundAndClickEffects.View
                 hasSmokeSpawned = true;
                 this.smokeSimulator.GenerateSmoke();
             }
-        }
-
-        //resets the values for the explosion
-        public void ResetExplosion()
-        {
-            hasSmokeSpawned = false;
-            hasParticlesSpawned = false;
-            totalTime = 0;
         }
     }
 }

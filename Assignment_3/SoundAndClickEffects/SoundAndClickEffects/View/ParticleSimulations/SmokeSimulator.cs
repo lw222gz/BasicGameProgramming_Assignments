@@ -7,19 +7,10 @@ namespace SmokeSimulation.View
 {
     class SmokeSimulator
     {
-        private const int amountOfSmoke = 3;
-
-        private float timeElapsed;
-        private float lastUpdate;
+        private const int amountOfSmoke = 10;
 
         private List<Smoke> smoke;
-        private Random rand;
-
-        //propery for smoke clouds
-        public List<Smoke> getSmoke
-        {
-            get { return smoke; }
-        }
+        private Random rand;       
 
         //creates a random obj used to generate smoke stats
         public SmokeSimulator()
@@ -27,33 +18,29 @@ namespace SmokeSimulation.View
             rand = new Random();
         }
 
-        //generates a new smoke cloud once one has gone out, if the list capacity still isent filled a new smoke cloud is spawned.
-        public void UpdateSmokeClouds(float time)
+        //Properties of private varibles START
+        public List<Smoke> getSmoke
         {
-            timeElapsed += time;
+            get { return smoke; }
+        }
+        //Properties of private varibles END
 
-            if (timeElapsed > lastUpdate)
+        
+        public void UpdateSmokeClouds(float timeElapsed)
+        {
+            for (int i = 0; i < smoke.Count; i++)
             {
-                float timeDiff = timeElapsed - lastUpdate;
-
-                for (int i = 0; i < smoke.Count; i++)
-                {
-                    smoke[i].UpdateSmoke(timeDiff);                 
-                }
-
-                lastUpdate = timeElapsed;
+                smoke[i].UpdateSmoke(timeElapsed);                 
             }
         }
 
-        //generates a couple of clouds to fade out after the explosion
+        //generates smokeclouds for an explosion
         public void GenerateSmoke()
         {
             smoke = new List<Smoke>(amountOfSmoke);
             for (int i = 0; i < smoke.Capacity; i++)
             {
-                Smoke s = new Smoke();
-                s.GenerateNewSmokeStats(rand);
-                smoke.Add(s);
+                smoke.Add(new Smoke(rand));
             }
         }
     }

@@ -8,11 +8,10 @@ namespace ParticleSimulation.View
 {
     class SplitterSystem
     {
-        //varibles that store the time between updates
-        private float timeElapsedTime;
-        private float lastUpdate;
+        //represents the scale of the explosion, this value if important when creating a splitterParticle.
         private float ExplosionScale;
 
+        private Random rand;
         private List<SplitterParticle> particles;
 
         //decides how many particles are gonna be renderd
@@ -21,40 +20,32 @@ namespace ParticleSimulation.View
         public SplitterSystem(float ExplosionScale)
         {
             this.ExplosionScale = ExplosionScale;
+            rand = new Random();
         }
 
-        //creates a list of <SplitterParticle>
-        public void generateParticles()
-        {
-            Random rand = new Random();
-            particles = new List<SplitterParticle>(100);
-
-            for (int i = 0; i < amountOfParticles; i++)
-            {                               
-                particles.Add(new SplitterParticle(rand, ExplosionScale));
-            }
-                
-        }
-
+        //properties for private varibles START
         public List<SplitterParticle> Particles
         {
             get { return particles; }
         }
+        //-- properties for private varibles END
 
-        //updates all particles positions by looping them.
-        public void UpdateParticleLocation(float timePassed)
-        {
-            timeElapsedTime += timePassed;
+        //creates a list of <SplitterParticle>
+        public void generateParticles()
+        {        
+            particles = new List<SplitterParticle>(100);
 
-            if (timeElapsedTime > lastUpdate)
+            for (int i = 0; i < amountOfParticles; i++)
             {
-                float timeDiff = timeElapsedTime - lastUpdate;
+                particles.Add(new SplitterParticle(rand, ExplosionScale));
+            }               
+        }   
 
-                foreach (SplitterParticle p in particles){
-                    p.UpdatePosition(timeDiff);
-                }
-
-                lastUpdate = timeElapsedTime;
+        //updates all particles positions
+        public void UpdateParticleLocation(float timeElapsed)
+        {
+            foreach (SplitterParticle p in particles){
+                p.UpdatePosition(timeElapsed);
             }
         }
     }
